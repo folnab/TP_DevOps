@@ -16,7 +16,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'jdk 21.x'
+          distribution: '21.x'
 
       #finally build your app with the latest command
       - name: Build and test with Maven
