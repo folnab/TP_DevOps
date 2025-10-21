@@ -1,0 +1,48 @@
+services:
+    database:
+        build:
+          context: /TPDocker
+          dockerfile: Dockerfile
+        networks:
+          - app-network
+        environment:
+          POSTGRES_DB: ${POSTGRES_DB}
+          POSTGRES_USER: ${POSTGRES_USER}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        volumes:
+          - pgdata:\varlib\postgresql\data
+        
+
+    backend:
+        build:
+          context: /simple-api
+          dockerfile: Dockerfile
+        environment:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DB}
+          SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+          SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+          SERVER_PORT: ${APP_PORT}
+        networks:
+          - app-network
+        depends_on:
+          - database
+
+    httpd:
+        build: 
+          context: /httpd
+          dockerfile: Dockerfile
+        ports:
+          - "${HTTP_PORT}:80"
+        networks:
+          - app-network
+        depends_on:
+          - backend
+
+networks:
+  app-network:
+    external: true
+
+volumes:
+  pgdata: 
+    name: ${PGDATA_VOL}
+    external: true
