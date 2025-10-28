@@ -58,3 +58,6 @@ jobs:
             context: ./httpd
             push: ${{ github.ref == 'refs/heads/main' }}
             tags: ${{ secrets.DOCKER_USERNAME }}/tp1_devops-httpd:latest
+
+        - name: sonarCloud analysis
+          run: mvn -B verify sonar:sonar -Dsonar.projectKey=folnab_TP_DevOps -Dsonar.organization=folnab -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
